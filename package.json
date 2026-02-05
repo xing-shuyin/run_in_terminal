@@ -1,0 +1,114 @@
+{
+    "name": "run_in_terminal",
+    "displayName": "终端运行",
+    "description": "快捷运行常用命令",
+    "version": "0.0.1",
+    "publisher": "xingshuyin",
+    "engines": {
+        "vscode": "^1.100.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "activationEvents": [
+        "onView:customCommandsView"
+    ],
+    "main": "./out/extension.js",
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "customCommands-activitybar",
+                    "title": "快捷命令",
+                    "icon": "resources/icon.svg"
+                }
+            ]
+        },
+        "views": {
+            "customCommands-activitybar": [
+                {
+                    "id": "customCommandsView",
+                    "name": "快捷命令",
+                    "when": "workspaceFolderCount >= 0"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "customCommands.refresh",
+                "title": "刷新",
+                "category": "快捷命令",
+                "icon": {
+                    "light": "resources/refresh_h.svg",
+                    "dark": "resources/refresh_b.svg"
+                }
+            },
+            {
+                "command": "customCommands.addCommand",
+                "title": "添加",
+                "category": "快捷命令",
+                "icon": {
+                    "light": "resources/add_h.svg",
+                    "dark": "resources/add_b.svg"
+                }
+            },
+            {
+                "command": "customCommands.editCommand",
+                "title": "修改",
+                "category": "快捷命令",
+                "icon": {
+                    "light": "resources/edit_h.svg",
+                    "dark": "resources/edit_b.svg"
+                }
+            },
+            {
+                "command": "customCommands.deleteCommand",
+                "title": "删除",
+                "category": "快捷命令",
+                "icon": {
+                    "light": "resources/del_h.svg",
+                    "dark": "resources/del_b.svg"
+                }
+            }
+        ],
+        "menus": {
+            "view/item/context": [
+                {
+                    "command": "customCommands.editCommand",
+                    "when": "view == customCommandsView && viewItem == command",
+                    "group": "inline"
+                },
+                {
+                    "command": "customCommands.deleteCommand",
+                    "when": "view == customCommandsView && viewItem == command",
+                    "group": "inline"
+                }
+            ],
+            "view/title": [
+                {
+                    "command": "customCommands.addCommand",
+                    "when": "view == customCommandsView",
+                    "group": "navigation"
+                },
+                {
+                    "command": "customCommands.refresh",
+                    "when": "view == customCommandsView",
+                    "group": "navigation"
+                }
+            ]
+        }
+    },
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "compile": "tsc -p ./",
+        "watch": "tsc -watch -p ./",
+        "lint": "eslint",
+        "postinstall": "node install.js"
+    },
+    "devDependencies": {
+        "@types/node": "^22",
+        "@types/vscode": "^1.100.0",
+        "typescript": "^5.9.2"
+    },
+    "dependencies": {}
+}
