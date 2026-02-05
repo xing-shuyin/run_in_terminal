@@ -138,33 +138,7 @@ class CommandsProvider implements vscode.TreeDataProvider<CommandItem> {
             // 创建默认的中文配置
             const defaultConfig: CommandsConfig = {
                 commands: [
-                    {
-                        id: '1',
-                        name: '查看文件',
-                        command: 'ls -la',
-                        description: '显示当前目录所有文件'
-                    },
-                    {
-                        id: '2',
-                        name: 'Node版本',
-                        command: 'node --version',
-                        workingDirectory: '${workspaceFolder}',
-                        description: '查看Node.js版本号'
-                    },
-                    {
-                        id: '3',
-                        name: 'Git状态',
-                        command: 'git status',
-                        workingDirectory: '${workspaceFolder}',
-                        description: '查看Git仓库状态'
-                    },
-                    {
-                        id: '4',
-                        name: '启动服务',
-                        command: 'npm start',
-                        workingDirectory: '${workspaceFolder}',
-                        description: '启动开发服务器'
-                    }
+
                 ]
             };
             this.saveConfig(defaultConfig);

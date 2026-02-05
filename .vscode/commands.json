@@ -1,0 +1,18 @@
+{
+  "commands": [
+    {
+      "id": "1",
+      "name": "package",
+      "command": "vsce package",
+      "workingDirectory": "${workspaceFolder}",
+      "description": "vsce package"
+    },
+    {
+      "id": "2",
+      "name": "compile",
+      "command": "npm run compile",
+      "workingDirectory": "${workspaceFolder}",
+      "description": "npm run compile"
+    }
+  ]
+}

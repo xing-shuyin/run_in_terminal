@@ -1,11 +1,16 @@
 {
-    "name": "run_in_terminal",
+    "name": "fast-run-in-terminal-ui",
     "displayName": "终端运行",
     "description": "快捷运行常用命令",
-    "version": "0.0.1",
+    "version": "0.0.3",
     "publisher": "xingshuyin",
     "engines": {
         "vscode": "^1.100.0"
+    },
+    "icon": "resources/line.png",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/xing-shuyin/run_in_terminal"
     },
     "categories": [
         "Other"
@@ -20,7 +25,7 @@
                 {
                     "id": "customCommands-activitybar",
                     "title": "快捷命令",
-                    "icon": "resources/icon.svg"
+                    "icon": "resources/icon_h.svg"
                 }
             ]
         },
