@@ -296,7 +296,31 @@ class CommandItem extends vscode.TreeItem {
         this.contextValue = 'command';
     }
 }
+/**
+ * 展开 ~ 为家目录路径
+ */
+function expandPath(pathStr: string): string {
+    if (typeof pathStr !== 'string') {
+        return pathStr;
+    }
 
+    let expanded = pathStr;
+
+    // 展开 ~
+    if (expanded.startsWith('~')) {
+        const homeDir = process.env.HOME || process.env.USERPROFILE || '';
+        if (homeDir) {
+            expanded = expanded.replace(/^~(?=\/|$)/, homeDir);
+        }
+    }
+
+    // 展开环境变量（可选）
+    expanded = expanded.replace(/\$([A-Z_][A-Z0-9_]*)/gi, (match, varName) => {
+        return process.env[varName] || match;
+    });
+
+    return expanded;
+}
 /**
  * 执行命令的核心函数
  */
@@ -304,6 +328,7 @@ async function executeCommand(command: CustomCommand): Promise<void> {
     try {
         // 处理工作目录
         let workingDir = command.workingDirectory || '${workspaceFolder}';
+        workingDir = expandPath(workingDir);
 
         // 替换工作目录中的变量
         if (vscode.workspace.workspaceFolders && vscode.workspace.workspaceFolders.length > 0) {
@@ -318,23 +343,24 @@ async function executeCommand(command: CustomCommand): Promise<void> {
         }
 
         // 查找或创建终端
-        const terminalName = `命令: ${command.name}`;
+        const terminalName = `${command.name}`;
         let terminal = vscode.window.terminals.find(t => t.name === terminalName);
 
-        if (!terminal) {
-            terminal = vscode.window.createTerminal(terminalName);
+        if (terminal) {
+            terminal.dispose();
         }
+        terminal = vscode.window.createTerminal(terminalName);
 
         // 显示终端并发送命令
         terminal.show();
 
         // 切换目录
         if (workingDir && !workingDir.includes('${')) {
-            terminal.sendText(`cd "${workingDir}"`);
+            terminal.sendText(`cd "${workingDir}"  &&  ${command.command} `);
         }
-
-        // 发送命令
-        terminal.sendText(command.command);
+        else {
+            terminal.sendText(`${command.command} `);
+        }
 
         // 显示执行成功的提示
         vscode.window.showInformationMessage(`执行: ${command.name}`);

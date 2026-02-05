@@ -2,7 +2,7 @@
     "name": "fast-run-in-terminal-ui",
     "displayName": "终端运行",
     "description": "快捷运行常用命令",
-    "version": "0.0.3",
+    "version": "0.0.4",
     "publisher": "xingshuyin",
     "engines": {
         "vscode": "^1.100.0"
@@ -15,9 +15,7 @@
     "categories": [
         "Other"
     ],
-    "activationEvents": [
-        "onView:customCommandsView"
-    ],
+    "activationEvents": [],
     "main": "./out/extension.js",
     "contributes": {
         "viewsContainers": {
