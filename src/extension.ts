@@ -321,6 +321,74 @@ function expandPath(pathStr: string): string {
 
     return expanded;
 }
+
+/**
+ * 获取当前终端的命令连接符
+ */
+
+function getShellSeparator(): string {
+    // 获取操作系统平台
+    const platform = process.platform;
+
+    // 获取 VS Code 终端配置
+    const terminalConfig = vscode.workspace.getConfiguration('terminal.integrated');
+
+    // 尝试从默认配置文件中获取 shell 路径
+    let shellPath: string | undefined;
+
+    if (platform === 'win32') {
+        // Windows
+        shellPath = terminalConfig.get<string>('shell.windows');
+    } else if (platform === 'darwin') {
+        // macOS
+        shellPath = terminalConfig.get<string>('shell.osx');
+    } else {
+        // Linux
+        shellPath = terminalConfig.get<string>('shell.linux');
+    }
+
+
+    // 如果配置中没有，则根据平台推断
+    if (!shellPath) {
+        if (platform === 'win32') {
+            // Windows 默认使用 CMD 或 PowerShell
+            // 检查是否有 PowerShell 相关的环境变量或默认设置
+            const isPowerShell = process.env.ComSpec?.toLowerCase().includes('powershell') ||
+                process.env.PSModulePath !== undefined;
+            return isPowerShell ? ';' : '&&';
+        }
+        // Unix 系统默认使用 bash/zsh，都支持 &&
+        return '&&';
+    }
+
+    // 根据 shell 路径判断类型
+    const shellLower = shellPath.toLowerCase();
+
+    // PowerShell
+    if (shellLower.includes('powershell') || shellLower.includes('pwsh')) {
+        // PowerShell 7+ 支持 &&，但为了兼容性，使用 ;
+        return ';';
+    }
+
+    // CMD (Windows)
+    if (shellLower.includes('cmd.exe') || shellLower.includes('cmd')) {
+        return '&&';
+    }
+
+    // Bash/Zsh/Fish 等 Unix shell
+    if (shellLower.includes('bash') ||
+        shellLower.includes('zsh') ||
+        shellLower.includes('fish') ||
+        shellLower.includes('sh')) {
+        return '&&';
+    }
+
+    // 默认返回 &&
+    return '&&';
+}
+
+
+
 /**
  * 执行命令的核心函数
  */
@@ -354,16 +422,18 @@ async function executeCommand(command: CustomCommand): Promise<void> {
         // 显示终端并发送命令
         terminal.show();
 
+        const separator = getShellSeparator();
+
         // 切换目录
         if (workingDir && !workingDir.includes('${')) {
-            terminal.sendText(`cd "${workingDir}"  &&  ${command.command} `);
+            terminal.sendText(`cd "${workingDir}"   ${separator}  ${command.command} `);
         }
         else {
             terminal.sendText(`${command.command} `);
         }
 
         // 显示执行成功的提示
-        vscode.window.showInformationMessage(`执行: ${command.name}`);
+        vscode.window.showInformationMessage(`执行: ${command.name} separator ${separator}`);
 
     } catch (error) {
         vscode.window.showErrorMessage(`执行命令失败: ${error}`);
