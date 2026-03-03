@@ -432,8 +432,6 @@ async function executeCommand(command: CustomCommand): Promise<void> {
             terminal.sendText(`${command.command} `);
         }
 
-        // 显示执行成功的提示
-        vscode.window.showInformationMessage(`执行: ${command.name} separator ${separator}`);
 
     } catch (error) {
         vscode.window.showErrorMessage(`执行命令失败: ${error}`);
